@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+body{
+  font-size: 1.6rem;
+}
+input{
+  border: solid 0.1rem;
+  border-radius: 0.4rem;
+  padding: 0.3rem;
+}
+button{
+  border: solid 0.1rem;
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+}
