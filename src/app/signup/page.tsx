@@ -110,9 +110,10 @@ export default function SignUp() {
       const requestBody = {
         userID : id,
         userPW : password,
-        userName : name
+        userName : name,
+        userMail : email
       };
-      const response = await fetch('http://192.168.45.172:9999/api/sign-up', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/auth/sign-up`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,6 +131,7 @@ export default function SignUp() {
       // 중복 확인 결과에 따라 처리
     } catch (err: any) {
       setError(err.message);
+      console.error(err.message);
     }
 
     // alert("로그인 시도");
@@ -164,7 +166,7 @@ export default function SignUp() {
     }
 
     try {
-      const response = await fetch(`http://192.168.45.172:9999/api/users/check-duplicate`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/auth/check-duplicate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +277,7 @@ export default function SignUp() {
       setDisplayCode("인증 완료"); // 인증 완료 메시지 표시
     }
 
-    if (countdown === 0) {
+    if (!isCodeCompleted && countdown === 0) {
       setIsCodeSent(false);
       alert("인증 시간이 만료 되었습니다. 다시 인증을 시도해주세요.");
       setCountdown(verifyCodeCountdown); // 카운트다운 초기화

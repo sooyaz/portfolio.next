@@ -103,7 +103,8 @@ export default function BoardList(){
           <input type="text" className={`mx-3`}/>
           <button className={`m-0`}>검색</button>
         </div>
-        <button className={`absolute top-0 left-0`}>글쓰기</button>
+        <Link href={`/board/write`} className={`absolute top-0 left-0 border p-3`}>글쓰기</Link>
+        {/* <button className={`absolute top-0 left-0`}>글쓰기</button> */}
       </div>
     </div>
   )
