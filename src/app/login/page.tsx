@@ -34,6 +34,7 @@ export default function Login() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // ✅ 반드시 있어야 쿠키 전달됨
         body: JSON.stringify({ userID:id, userPW:password })
       });
 

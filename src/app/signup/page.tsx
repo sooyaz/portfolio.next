@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useLoading } from '../context/loadingContext'; // useLoading 훅 임포트
+import { useRouter } from 'next/navigation'; // Next.js App Router용 훅
 
 export default function SignUp() {
   const [id, setId] = useState<string>("");
@@ -27,6 +28,7 @@ export default function SignUp() {
 
   const regexp = /^[a-zA-Z0-9]+$/; // 아이디 정규식 (영문 대소문자, 숫자)
   const regexpkor = /^[가-힣a-zA-Z0-9]+$/; // 아이디 정규식 (한글, 영문 대소문자, 숫자)
+  const router = useRouter();
 
   const onInputChange = (type:string, e:React.ChangeEvent<HTMLInputElement>) => {
     const inputValue:string = e.target.value;
@@ -127,15 +129,14 @@ export default function SignUp() {
       }
 
       const data = await response.json();
-      console.log("🚀 ~ checkDuplicate ~ data:", data);
+      alert(`${data.message} 로그인 후 이용해 주세요.`);
+      router.push('/');
+      console.log("🚀 회원가입 완료 🚀", data);
       // 중복 확인 결과에 따라 처리
     } catch (err: any) {
       setError(err.message);
       console.error(err.message);
     }
-
-    // alert("로그인 시도");
-    console.log("ID/PW", id, password);
   }
 
   const checkDuplicate = async (type: string) => {
