@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Next.js App Router용 훅
 import dynamic from 'next/dynamic';
 import type { Quill } from 'react-quill-new';
 
@@ -21,22 +22,28 @@ const ReactQuill = dynamic(
 );
 
 export default function PostWritePage() {
+  const router = useRouter();
+
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+
   const quillRef = useRef<{ getEditor: () => Quill } | null>(null);
   const quillInstance = quillRef.current?.getEditor();
-    // 임시로 첨부된 파일들을 관리하는 상태
-    const [tempAttachedFiles, setTempAttachedFiles] = useState<{ id: string; file: File; base64Url: string }[]>([]);
+  
+  // 임시로 첨부된 파일들을 관리하는 상태
+  const [tempAttachedFiles, setTempAttachedFiles] = useState<{ id: string; file: File; base64Url: string }[]>([]);
+
   // Quill 에디터의 툴바 및 핸들러 설정을 useMemo로 메모이제이션
   // 컴포넌트가 리렌더링될 때마다 객체가 새로 생성되는 것을 방지
   const modules = useMemo(() => ({
     toolbar: {
       container: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],        // 헤더 태그 (h1~h6)
+        [{'size':['small', false, 'large', 'huge']}],
         ['bold', 'italic', 'underline', 'strike'],        // 볼드, 이탤릭, 밑줄, 취소선
         [{ 'color': [] }, { 'background': [] }],          // 텍스트 색상, 배경색
         [{ 'align': [] }],                                // 정렬 (왼쪽, 중앙, 오른쪽, 양쪽 맞춤)
         ['image'],                                        // 이미지 삽입 버튼
+        // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],        // 헤더 태그 (h1~h6)
         // ['blockquote', 'code-block'],                     // 인용구, 코드 블록
         // [{ 'list': 'ordered' }, { 'list': 'bullet' }],    // 숫자 목록, 불릿 목록
         // [{ 'indent': '-1' }, { 'indent': '+1' }],         // 들여쓰기/내어쓰기
@@ -126,48 +133,87 @@ export default function PostWritePage() {
   };
 
   // 게시글 제출 핸들러
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('제목:', title);
-    console.log('게시글 내용 (HTML):', content);
-    console.log('555', tempAttachedFiles);
+    
+    if(confirm(`글 작성을 완료 하시겠습니까?`)){
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/post/insert-post`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include', // ✅ 반드시 있어야 쿠키 전달됨
+          body: JSON.stringify({
+            userID: 3,
+            title: title,
+            content: content,
+            boardType: 1,
+            category: 1
+          })
+        });
 
-    // TODO: 제목과 content (HTML 형식)를 백엔드로 전송하는 API 호출 로직 구현
-    alert('게시글 내용이 콘솔에 출력되었습니다. 실제 전송 로직을 구현하세요.');
+        const data = await response.json();
+
+        if(!response.ok){
+          const errMessage = data.message;
+          if(errMessage) throw new Error(errMessage);
+
+          throw new Error("서버 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+        }
+        alert("게시물 작성에 성공하였습니다.");
+        router.push('/board/list');
+
+      } catch(err){
+        console.error("실패", err);
+        alert("게시물 작성에 실패하였습니다. 다시 시도해 주세요.");
+      }
+
+      console.log('제목:', title);
+      console.log('게시글 내용 (HTML):', content);
+      console.log('555', tempAttachedFiles);
+
+      // TODO: 제목과 content (HTML 형식)를 백엔드로 전송하는 API 호출 로직 구현
+      // alert('게시글 내용이 콘솔에 출력되었습니다. 실제 전송 로직을 구현하세요.');
+    }
+      
   };
 
-  useEffect(() => {
-    if (quillInstance) {
-      const handleTextChange = () => {
-        // 현재 에디터의 HTML 콘텐츠를 가져옴
-        const currentHtml = quillInstance.root.innerHTML;
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(currentHtml, 'text/html');
-        const currentImageElements = Array.from(doc.querySelectorAll('img'));
+  /**
+   * 이미지 첨부시 구현
+   */
+  // useEffect(() => {
+  //   if (quillInstance) {
+  //     const handleTextChange = () => {
+  //       // 현재 에디터의 HTML 콘텐츠를 가져옴
+  //       const currentHtml = quillInstance.root.innerHTML;
+  //       const parser = new DOMParser();
+  //       const doc = parser.parseFromString(currentHtml, 'text/html');
+  //       const currentImageElements = Array.from(doc.querySelectorAll('img'));
 
-        // 현재 에디터에 남아있는 이미지들의 Base64 URL 목록
-        const currentImageBase64Urls = new Set(
-          currentImageElements
-            .map(img => img.getAttribute('src'))
-            .filter((src): src is string => src !== null && src.startsWith('data:image'))
-        );
+  //       // 현재 에디터에 남아있는 이미지들의 Base64 URL 목록
+  //       const currentImageBase64Urls = new Set(
+  //         currentImageElements
+  //           .map(img => img.getAttribute('src'))
+  //           .filter((src): src is string => src !== null && src.startsWith('data:image'))
+  //       );
 
-        // tempAttachedFiles에서 현재 에디터에 없는 이미지들을 찾아 제거
-        setTempAttachedFiles(prevFiles => {
-          return prevFiles.filter(fileInfo =>
-            currentImageBase64Urls.has(fileInfo.base64Url)
-          );
-        });
-      };
+  //       // tempAttachedFiles에서 현재 에디터에 없는 이미지들을 찾아 제거
+  //       setTempAttachedFiles(prevFiles => {
+  //         return prevFiles.filter(fileInfo =>
+  //           currentImageBase64Urls.has(fileInfo.base64Url)
+  //         );
+  //       });
+  //     };
 
-      quillInstance.on('text-change', handleTextChange);
+  //     quillInstance.on('text-change', handleTextChange);
 
-      // 컴포넌트 언마운트 시 이벤트 리스너 제거
-      return () => {
-        quillInstance.off('text-change', handleTextChange);
-      };
-    }
-  }, [quillInstance, setTempAttachedFiles]);
+  //     // 컴포넌트 언마운트 시 이벤트 리스너 제거
+  //     return () => {
+  //       quillInstance.off('text-change', handleTextChange);
+  //     };
+  //   }
+  // }, [quillInstance, setTempAttachedFiles]);
 
   return (
     <div className="container mx-auto p-8 max-w-4xl">
@@ -175,7 +221,7 @@ export default function PostWritePage() {
       <form onSubmit={handleSubmit}>
         {/* 제목 입력 필드 */}
         <div className="mb-4">
-          <label htmlFor="title" className="block text-gray-700 text-sm font-bold mb-2">
+          <label htmlFor="title" className="block text-gray-700 text-2xl font-bold mb-2">
             제목
           </label>
           <input
@@ -191,7 +237,7 @@ export default function PostWritePage() {
 
         {/* ReactQuill 에디터 */}
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label className="block text-gray-700 text-2xl font-bold mb-2">
             내용
           </label>
           {/* 에디터의 높이를 반드시 지정해야 합니다. */}
@@ -204,11 +250,11 @@ export default function PostWritePage() {
               // formats는 modules.toolbar에 맞게 자동으로 추출되지만, 명시적으로 제어할 수 있습니다.
               // formats={['header', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'list', 'bullet', 'indent', 'link', 'image', 'video', 'color', 'background', 'align', 'code-block']}
               placeholder="내용을 입력하세요..."
-              className="h-full" // 부모 div의 높이에 맞추기 위해 h-full 적용 (Tailwind CSS)
+              className="h-200" // 부모 div의 높이에 맞추기 위해 h-full 적용 (Tailwind CSS)
             />
         </div>
 
-        <div className="mt-16 flex justify-end"> {/* 에디터 높이 고려하여 margin-top 조정 */}
+        <div className="mt-20 flex justify-end"> {/* 에디터 높이 고려하여 margin-top 조정 */}
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

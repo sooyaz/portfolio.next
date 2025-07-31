@@ -35,3 +35,46 @@ html, body {
   }
   /* 이제 .box의 width는 20 * 8px = 160px로 자동 변경됨 */
 }
+
+
+/* 드롭다운 목록에 표시될 텍스트와 실제 크기 미리보기 (필수) */
+/* .ql-snow .ql-picker.ql-size는 Quill의 기본 드롭다운 클래스입니다. */
+/* data-value 속성을 사용하여 우리가 등록한 '10px', '12px' 등을 참조합니다. */
+/* ::before 가상 요소를 사용하여 드롭다운 항목의 텍스트를 설정합니다. */
+.quill .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.quill .ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: "보통";
+  font-size: 1.6rem;
+}
+
+.quill .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before{content: "작게"; }
+.quill .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
+  content: "작게"; 
+  font-size: 1.2rem;
+}
+
+.quill .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before{content: "크게"; }
+.quill .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before {
+  content: "크게";
+  font-size: 2.3rem;
+}
+
+.quill .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before{content: "더 크게"; }
+.quill .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before {
+  content: "더 크게";
+  font-size: 3rem;
+}
+
+/* --- 실제 에디터 내용에 적용될 글씨 크기 (필수) --- */
+/* Quill은 글씨 크기 변경 시 해당 텍스트에 .ql-size-XXpx 클래스를 추가합니다. */
+/* 이 클래스에 font-size 속성을 부여하여 실제 크기를 변경합니다. */
+/* .ql-editor는 Quill 에디터의 본문 영역을 나타내는 클래스입니다. */
+.ql-container .ql-editor { font-size: 1.6rem; }
+.ql-container .ql-editor .ql-size-small { font-size: 1.2rem; }
+.ql-container .ql-editor .ql-size-large { font-size: 2.3rem; }
+.ql-container .ql-editor .ql-size-huge { font-size: 3rem; }
+
+/* 뷰어로 볼 때 사이즈 별 글씨 체크 */
+.ql-size-small { font-size: 1.2rem; }
+.ql-size-large { font-size: 2.3rem; }
+.ql-size-huge { font-size: 3rem; }

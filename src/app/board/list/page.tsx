@@ -1,9 +1,12 @@
 'use client';
 
 import Link from "next/link";
+import { useRouter } from 'next/navigation'; // Next.js App Router용 훅
+import {replaceDateTime} from '../../../utils/utils';
+
 import {sortedPosts} from "../../../lib/board"
 import Pagination from '../../components/pagination';
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { usePostStore } from "@/stores/usePostStore";
 
 interface Post {
@@ -18,20 +21,78 @@ interface Post {
 }
 
 export default function BoardList(){
-  const setPosts = usePostStore(state => state.setPosts);
-  const [postsList, setPostsList] = useState<Post[]>([]);
+  const router = useRouter();
+
+  const [totalPostsCnt, setTotalPostsCnt] = useState(0);
+  const [postsList, setPostsList] = useState<any[]>([]);
   const [currnetPage, setCurrentPage] = useState(1);
 
-  const totalPostsCnt = 33;
+  // const totalPostsCnt = 33;
   const showPosts = 10;
 
+  const getPostsList = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/post/get-posts?page=${currnetPage}&showPostCnt=${10}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // ✅ 반드시 있어야 쿠키 전달됨
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+      console.log("!!!gg", data)
+
+      if(!response.ok){
+        const errMessage = data.message;
+        if(errMessage) throw new Error(errMessage);
+
+        throw new Error("서버 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+      }
+
+      setTotalPostsCnt(data.totalCount);
+      
+      setPostsList(data.list);
+      // alert("게시물 작성에 성공하였습니다.");
+      // router.push('/board/list');
+
+    } catch(err){
+      console.error("실패", err);
+      // alert("게시물 작성에 실패하였습니다. 다시 시도해 주세요.");
+    }
+  }
+
+  const getPostsCount = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/post/get-posts-count`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // ✅ 반드시 있어야 쿠키 전달됨
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if(!response.ok){
+        const errMessage = data.message;
+        if(errMessage) throw new Error(errMessage);
+
+        throw new Error("서버 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+      }
+      setTotalPostsCnt(data.totalCount);
+    } catch(err){
+      console.error("게시물 총 갯수 실패", err);
+      // alert("게시물 작성에 실패하였습니다. 다시 시도해 주세요.");
+    }
+  }
+
   useEffect(()=>{
-    const currentList = sortedPosts.filter((item, index)=> showPosts * (currnetPage - 1) <= index && index < showPosts * currnetPage);
-    setPostsList(currentList);
-    setPosts(currentList);
+    getPostsList();
   }, [currnetPage])
 
-  const test = [1,2,3,4,5,6,7,8,9,10];
   return(
     <div className={`flex flex-col items-center h-screen p-10`}>
       <table className={`w-full m-10 min-h-28`}>
@@ -65,8 +126,8 @@ export default function BoardList(){
                     <Link href={`/board/list/${item.id}`}>{item.title}</Link>
                   </td>
                   <td>{item.auth}</td>
-                  <td>{item.write_dt}</td>
-                  <td>{item.count}</td>
+                  <td>{replaceDateTime(item.created_dt)}</td>
+                  <td>{item.views}</td>
                 </tr>
               )
             })
@@ -75,7 +136,7 @@ export default function BoardList(){
       </table>
       <div className={`relative w-full flex flex-col items-center`}>
         <Pagination
-          totalPosts={33}         // 총 게시물 수
+          totalPosts={totalPostsCnt}         // 총 게시물 수
           postsPerPage={10}       // 한 페이지에 보여줄 게시물 수
           pageRangeDisplayed={5}  // 페이지네이션 바에 나타낼 페이지 번호 갯수 표시
           setCurrentPage={setCurrentPage}
