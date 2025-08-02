@@ -46,6 +46,8 @@ export default function Header() {
         <Link href="/" className="text-5xl font-extrabold text-gray-900 tracking-tight">
           VELLO:D
         </Link>
+        {/* <Link href={"/"}>문의</Link> */}
+        <Link href={"/board/list"}>자유게시판</Link>
         <div>
           {
             userInfo.userName === "" ?

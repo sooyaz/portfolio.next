@@ -145,7 +145,7 @@ export default function PostWritePage() {
           },
           credentials: 'include', // ✅ 반드시 있어야 쿠키 전달됨
           body: JSON.stringify({
-            userID: 3,
+            userID: "admin",
             title: title,
             content: content,
             boardType: 1,
