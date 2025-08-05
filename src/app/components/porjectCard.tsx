@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Project } from '../../lib/projects'; // 정의한 Project 인터페이스 임포트
 
+import { usePopupStore } from '@/stores/usePopupStore';
+
 // Project 타입을 직접 props로 받도록 변경
 export default function ProjectCard({
   title,
@@ -15,8 +17,13 @@ export default function ProjectCard({
   detailPageUrl,
   span = 'col-span-1' // 기본값 설정
 }: Project) {
+  const { openPopup } = usePopupStore();
   const openProject = () => {
-    console.log(">>>>>!!!")
+    // openPopup 함수를 호출하여 팝업을 엽니다.
+    openPopup(
+      true,
+      "portfolio"
+    );
   }
   return (
     // 그리드 span을 prop으로 받아서 적용
