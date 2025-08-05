@@ -8,6 +8,8 @@ import LoadingOverlay from './components/loadingOverlay'; // LoadingOverlay 임�
 import Header from './components/header'; // Header 컴포넌트 임포트
 import Footer from './components/footer'; // Footer 컴포넌트 임포트
 import ClientLayout from "./components/ClientLayout";
+import GlobalPopupModal from './components/PopupModal'
+import PortfolioModal from './components/PortfolioModal'
 
 
 export interface User {
@@ -45,6 +47,9 @@ export default async function RootLayout({
           <main className="min-h-[calc(100vh-160px)]">
             {/* <LoadingProvider> */}
             <ClientLayout user={decoded} children={children} />
+
+            <GlobalPopupModal />
+            <PortfolioModal />
               {/* {children} */}
               {/* <LoadingOverlay />
             </LoadingProvider> */}

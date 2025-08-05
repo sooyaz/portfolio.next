@@ -4,24 +4,18 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation'; // Next.js App Router용 훅
 import {replaceDateTime} from '../../../utils/utils';
 
-import {sortedPosts} from "../../../lib/board"
+// import {sortedPosts} from "../../../lib/board"
+import Pagination from '../../components/pagination';
+// import PAS from "../../components/pagination";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { usePostStore } from "@/stores/usePostStore";
+// import { usePostStore } from "@/stores/usePostStore";
 
-import KKASD from '@/app/components/Pagination';
-
-interface Post {
-  id: number;
-  category: number;     //글 작성 카테고리  0:공지사항, 1:일반게시글, 2:문의게시글
-  title: string;        //글 제목
-  description: string;  //글 내용
-  auth: string;         //작성자
-  write_dt: string;     //작성일
-  count: number;        //조회수
-  thumbnail?: string;   //썸네일
+interface Category {
+  category: string;
 }
 
-export default function BoardList(){
+export default function ClientBoardList({category}: Category){
+  console.log("!!!카테고리!!!", category)
   const router = useRouter();
 
   const [totalPostsCnt, setTotalPostsCnt] = useState(0);
@@ -60,32 +54,6 @@ export default function BoardList(){
 
     } catch(err){
       console.error("실패", err);
-      // alert("게시물 작성에 실패하였습니다. 다시 시도해 주세요.");
-    }
-  }
-
-  const getPostsCount = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/post/get-posts-count`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // ✅ 반드시 있어야 쿠키 전달됨
-        credentials: 'include'
-      });
-
-      const data = await response.json();
-
-      if(!response.ok){
-        const errMessage = data.message;
-        if(errMessage) throw new Error(errMessage);
-
-        throw new Error("서버 오류가 발생했습니다. 나중에 다시 시도해주세요.");
-      }
-      setTotalPostsCnt(data.totalCount);
-    } catch(err){
-      console.error("게시물 총 갯수 실패", err);
       // alert("게시물 작성에 실패하였습니다. 다시 시도해 주세요.");
     }
   }
@@ -136,26 +104,12 @@ export default function BoardList(){
         </tbody>
       </table>
       <div className={`relative w-full flex flex-col items-center`}>
-        <KKASD 
-          totalPosts={totalPostsCnt}         // 총 게시물 수
-          postsPerPage={10}       // 한 페이지에 보여줄 게시물 수
-          pageRangeDisplayed={5}  // 페이지네이션 바에 나타낼 페이지 번호 갯수 표시
-          setCurrentPage={setCurrentPage} />
-        {/* <div className={`text-3xl mb-5`}>
-          <span className={`text-3xl mx-1`}>⏪️</span>
-          <span className={`text-3xl mx-1`}>◀️</span>
-          {
-            test.map((item, index)=>{
-              return(
-                <span key={index} className={`text-3xl mx-1`}>
-                  {item}
-                </span>
-              )
-            })
-          }
-          <span className={`text-3xl mx-1`}>▶️</span>
-          <span className={`text-3xl mx-1`}>⏩️</span>
-        </div> */}
+        <Pagination
+          totalPosts={totalPostsCnt}    // 총 게시물 수
+          postsPerPage={10}             // 한 페이지에 보여줄 게시물 수
+          pageRangeDisplayed={5}        // 페이지네이션 바에 나타낼 페이지 번호 갯수 표시
+          setCurrentPage={setCurrentPage}
+        />
         <div className={`flex`}>
           <select name="검색" id="search" className={`border border-black-500 rounded-[5]`}>
             <option value="제목">제목</option>
@@ -165,7 +119,6 @@ export default function BoardList(){
           <button className={`m-0`}>검색</button>
         </div>
         <Link href={`/board/write`} className={`absolute top-0 left-0 border p-3`}>글쓰기</Link>
-        {/* <button className={`absolute top-0 left-0`}>글쓰기</button> */}
       </div>
     </div>
   )

@@ -1,3 +1,4 @@
+'use client';
 // my-next-app/src/components/ProjectCard.tsx
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,10 +15,14 @@ export default function ProjectCard({
   detailPageUrl,
   span = 'col-span-1' // 기본값 설정
 }: Project) {
+  const openProject = () => {
+    console.log(">>>>>!!!")
+  }
   return (
     // 그리드 span을 prop으로 받아서 적용
-    <div className={`group relative bg-white rounded-xl shadow-lg hover:shadow-xl 
-                    transition-all duration-300 overflow-hidden cursor-pointer ${span}`}>
+    <div className={`group relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer ${span}`}
+         onClick={openProject}
+    >
       {/* 이미지 미리보기 */}
       <div className="relative w-full h-100 overflow-hidden"> {/* 높이 고정 */}
         <Image

@@ -21,9 +21,16 @@ const ReactQuill = dynamic(
   { ssr: false }
 );
 
-export default function PostWritePage() {
+interface BoardType {
+  boardType: string;
+}
+
+export default function PostWritePage({boardType}: BoardType) {
+  console.log("!!!!", boardType)
   const router = useRouter();
 
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -138,19 +145,21 @@ export default function PostWritePage() {
     
     if(confirm(`글 작성을 완료 하시겠습니까?`)){
       try {
+        const reqData = {
+          userID: boardType == "ask" ? name : "",
+          askPW: boardType == "ask" ? password : null,
+          title: title,
+          content: content,
+          boardType: boardType == "ask" ? 2 : 1,
+          category: 1
+        }
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/api/post/insert-post`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           credentials: 'include', // ✅ 반드시 있어야 쿠키 전달됨
-          body: JSON.stringify({
-            userID: "admin",
-            title: title,
-            content: content,
-            boardType: 1,
-            category: 1
-          })
+          body: JSON.stringify(reqData)
         });
 
         const data = await response.json();
@@ -172,9 +181,6 @@ export default function PostWritePage() {
       console.log('제목:', title);
       console.log('게시글 내용 (HTML):', content);
       console.log('555', tempAttachedFiles);
-
-      // TODO: 제목과 content (HTML 형식)를 백엔드로 전송하는 API 호출 로직 구현
-      // alert('게시글 내용이 콘솔에 출력되었습니다. 실제 전송 로직을 구현하세요.');
     }
       
   };
@@ -217,8 +223,39 @@ export default function PostWritePage() {
 
   return (
     <div className="container mx-auto p-8 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">게시글 작성</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">{boardType} 게시글 작성</h1>
       <form onSubmit={handleSubmit}>
+        {
+          /** 문의글 작성시 필요 **/
+          boardType == "ask" &&
+          <div className="mb-4">
+            <label htmlFor="title" className="mr-3 text-gray-700 text-2xl font-bold mb-2">
+              이름
+            </label>
+            <input
+              type="text"
+              id="title"
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="작성자명을 입력하세요"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <label htmlFor="title" className="m-3 text-gray-700 text-2xl font-bold mb-2">
+              비밀번호
+            </label>
+            <input
+              type="password"
+              id="title"
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="비밀번호를 설정하세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+        }
+        
         {/* 제목 입력 필드 */}
         <div className="mb-4">
           <label htmlFor="title" className="block text-gray-700 text-2xl font-bold mb-2">

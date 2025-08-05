@@ -10,12 +10,24 @@ import { shallow } from 'zustand/shallow'; // shallow 임포트
 import { useLoading } from '../context/loadingContext';
 import { useRouter } from 'next/navigation'; // Next.js App Router용 훅
 
+import { usePopupStore } from '@/stores/usePopupStore';
+
 // 메인 헤더 컴포넌트
 export default function Header() {
   const {userInfo, initUserInfo} = useUserStore(state => ({userInfo : state.userInfo, initUserInfo: state.initUserInfo}), shallow);
   // 로딩 상태를 관리하는 훅 사용
   const { startLoading, stopLoading } = useLoading(); // useLoading 훅 사용
   const router = useRouter();
+
+  const { openPopup } = usePopupStore();
+  const handleOpenPopup = () => {
+    // openPopup 함수를 호출하여 팝업을 엽니다.
+    openPopup(
+      "portfolio",
+      '환영합니다!', 
+      <p className="text-center">이것은 **어떤 컴포넌트**에서도 열 수 있는 팝업입니다.</p>
+    );
+  };
 
   const logOut = async ()=>{
     startLoading();
@@ -43,11 +55,12 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm py-4 border-b border-gray-200">
       <div className="container mx-auto flex items-center justify-between px-4 max-w-6xl h-20">
+        <h1 onClick={handleOpenPopup}>테스트</h1>
         <Link href="/" className="text-5xl font-extrabold text-gray-900 tracking-tight">
           VELLO:D
         </Link>
-        {/* <Link href={"/"}>문의</Link> */}
-        <Link href={"/board/list"}>자유게시판</Link>
+        <Link href={"/board/ask/list"}>문의</Link>
+        <Link href={"/board/free/list"}>자유게시판</Link>
         <div>
           {
             userInfo.userName === "" ?

@@ -5,3 +5,16 @@ export const replaceDateTime = (datetime:string) => {
     const day = dateObject.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
+
+export const categoryCode = (boardType:string) => {
+    let code = 1;
+    switch (boardType) {
+        case "free":
+            code = 1;
+            break;
+        case "ask":
+            code = 2;
+            break;
+    }
+    return code;
+}
