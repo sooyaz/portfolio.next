@@ -14,18 +14,18 @@ export interface Project {
 
 export const myProjects: Project[] = [
   {
-    id: 'email-auth-system',
-    title: '이메일 인증 시스템',
-    description: 'Next.js, Express, Redis를 활용한 사용자 이메일 인증 및 회원가입 시스템. 보안과 효율성을 최적화하여 개발했습니다.',
+    id: 'dragndrop',
+    title: '단어 퀴즈 드래그 앤 드랍',
+    description: 'React, Typescript를 활용한 단어 맞추기 퀴즈 게임. Drag and Drop 기능을 구현하여 사용자가 단어를 맞추는 재미를 느낄 수 있습니다.',
     imageUrl: '/images/dashboard-preview.png', // 이미지 경로 확인
-    technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'Express', 'Redis', 'MySQL'],
+    technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'React'],
     category: 'Web App',
     demoUrl: 'https://your-email-auth-demo.vercel.app',
     githubUrl: 'https://github.com/your-username/your-email-auth-repo',
     span: 'col-span-1', // 기본 크기
   },
   {
-    id: 'portfolio-v1',
+    id: 'painting',
     title: '개인 포트폴리오 웹사이트 v1',
     description: '반응형 디자인과 SEO 최적화에 중점을 둔 개인 포트폴리오 웹사이트. 저의 개발 여정을 담았습니다.',
     imageUrl: '/images/dashboard-preview.png', // 이미지 경로 확인

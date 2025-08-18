@@ -8,6 +8,7 @@ import { usePopupStore } from '@/stores/usePopupStore';
 
 // Project 타입을 직접 props로 받도록 변경
 export default function ProjectCard({
+  id,
   title,
   description,
   imageUrl,
@@ -22,7 +23,7 @@ export default function ProjectCard({
     // openPopup 함수를 호출하여 팝업을 엽니다.
     openPopup(
       true,
-      "portfolio"
+      id
     );
   }
   return (
