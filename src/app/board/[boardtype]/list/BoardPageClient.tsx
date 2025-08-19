@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import {replaceDateTime, categoryCode} from '../../../../utils/utils';
-import Pagination from '../../../components/Pagination';
+import {replaceDateTime, categoryCode} from '@/utils/utils';
+import Pagination from '@/app/components/Pagination';
 
 interface BoardType {
   boardType: string;
