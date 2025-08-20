@@ -5,8 +5,8 @@ import { useEffect } from 'react'
 // import { User } from '@/types/user'
 import { useUserStore } from "@/stores/useUserStore";
 
-import Header from '../components/header'; // Header 컴포넌트 임포트
-import Footer from '../components/footer'; // Footer 컴포넌트 임포트
+import Header from './Header'; // Header 컴포넌트 임포트
+import Footer from './Footer'; // Footer 컴포넌트 임포트
 
 
 export interface User {

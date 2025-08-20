@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from 'next/link';
-import ProjectCard from './components/porjectCard'; // ProjectCard 컴포넌트 임포트
+import ProjectCard from './components/PorjectCard'; // ProjectCard 컴포넌트 임포트
 import { myProjects } from '../lib/projects'; // 프로젝트 데이터 임포트
 
 export default function Home() {

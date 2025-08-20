@@ -1,7 +1,13 @@
 import WritePageClient from './WritePageClient';
 
-export default function PostWritePage({ params }: { params: { boardtype: string } }){
-  const boardType = params.boardtype;
+interface ParamInfo{
+  params:{
+    boardType: string
+  }
+}
+
+export default function PostWritePage({ params }:ParamInfo){
+  const {boardType} = params;
   return(
     <WritePageClient boardType={boardType} />
   )

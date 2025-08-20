@@ -4,9 +4,9 @@ import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
 import { LoadingProvider } from './context/loadingContext'; // LoadingProvider 임포트
-import LoadingOverlay from './components/loadingOverlay'; // LoadingOverlay 임포트
-import Header from './components/header'; // Header 컴포넌트 임포트
-import Footer from './components/footer'; // Footer 컴포넌트 임포트
+import LoadingOverlay from './components/LoadingOverlay'; // LoadingOverlay 임포트
+import Header from './components/Header'; // Header 컴포넌트 임포트
+import Footer from './components/Footer'; // Footer 컴포넌트 임포트
 import ClientLayout from "./components/ClientLayout";
 import GlobalPopupModal from './components/PopupModal'
 import PortfolioModal from './components/PortfolioModal'

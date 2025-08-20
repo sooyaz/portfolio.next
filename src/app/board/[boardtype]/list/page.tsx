@@ -1,7 +1,13 @@
 import BoardPageClient from './BoardPageClient';
 
-export default function BoardListPage({ params }: { params: { boardtype: string } }){
-  const boardType = params.boardtype;
+interface ParamInfo{
+  params:{
+    boardType: string
+  }
+}
+
+export default function BoardListPage({ params }: ParamInfo){
+  const {boardType} = params;
   return(
     <BoardPageClient boardType={boardType} />
   )
