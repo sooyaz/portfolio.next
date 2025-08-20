@@ -1,3 +1,4 @@
+import { use } from "react";
 import {replaceDateTime} from '../../../../utils/utils';
 
 interface Post {
@@ -11,9 +12,15 @@ interface Post {
   thumbnail?: string;   //썸네일
 }
 
-export default async function Post({ params }: { params: { boardtype:string, id: string } }){
-  const boardType = params.boardtype == "ask" ? 2 : 1;
-  const postId = params.id;
+interface PageProps  {
+  boardtype: string
+  id: string
+}
+
+export default async function Post({params}:AppPageProps<PageProps>){
+  const {boardtype, id} = use(params);
+  const boardType = boardtype == "ask" ? 2 : 1;
+  const postId = id;
 
   console.log("리스트 확인중", boardType, postId)
   

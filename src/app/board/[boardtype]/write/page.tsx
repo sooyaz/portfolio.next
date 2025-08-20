@@ -1,13 +1,12 @@
+import { use } from "react";
 import WritePageClient from './WritePageClient';
 
 interface ParamInfo{
-  params:{
-    boardType: string
-  }
+  boardType: string
 }
 
-export default function PostWritePage({ params }:ParamInfo){
-  const {boardType} = params;
+export default function PostWritePage({ params }:AppPageProps<ParamInfo>){
+  const {boardType} = use(params);
   return(
     <WritePageClient boardType={boardType} />
   )

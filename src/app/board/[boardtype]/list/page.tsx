@@ -1,13 +1,12 @@
+import { use } from "react";
 import BoardPageClient from './BoardPageClient';
 
 interface ParamInfo{
-  params:{
-    boardType: string
-  }
+  boardType: string
 }
 
-export default function BoardListPage({ params }: ParamInfo){
-  const {boardType} = params;
+export default function BoardListPage({params} : AppPageProps<ParamInfo>){
+  const {boardType} = use(params);
   return(
     <BoardPageClient boardType={boardType} />
   )
