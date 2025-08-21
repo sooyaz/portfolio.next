@@ -22,7 +22,7 @@ export default function GlobalPopupModal() {
         <div className="mt-4">{`테스트 내용`}</div>
         {/* <div className="mt-4 flex justify-end">
           <button onClick={closePopup} className="rounded bg-gray-300 px-4 py-2 hover:bg-gray-400">
-            닫기
+            닫기a
           </button>
         </div> */}
       </div>
