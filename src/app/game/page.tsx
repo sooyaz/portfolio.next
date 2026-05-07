@@ -11,6 +11,7 @@ const COLORS = [
   "#DDA0DD",
   "#FF9F43",
   "#74B9FF",
+  "#CCCCCC",
 ];
 
 export default function LunchGame(){
