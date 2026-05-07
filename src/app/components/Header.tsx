@@ -43,11 +43,11 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm py-4 border-b border-gray-200">
       <div className="container mx-auto flex items-center justify-between px-4 max-w-6xl h-20">
-        <Link href="/" className="text-5xl font-extrabold text-gray-900 tracking-tight">
+        <Link href="/game" className="text-5xl font-extrabold text-gray-900 tracking-tight">
           VELLO:D
         </Link>
-        <Link href={"/board/ask/list"}>문의</Link>
-        <Link href={"/board/free/list"}>자유게시판</Link>
+        {/* <Link href={"/board/ask/list"}>문의</Link>
+        <Link href={"/board/free/list"}>자유게시판</Link> */}
         <div>
           {
             userInfo.userName === "" ?
