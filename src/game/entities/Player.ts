@@ -1,17 +1,25 @@
 import Phaser from "phaser";
 
-export class Player extends Phaser.Physics.Arcade.Sprite {
+export class Player
+  extends Phaser.Physics.Arcade.Sprite {
+
+  body!: Phaser.Physics.Arcade.Body;
+
   cursors:
     Phaser.Types.Input.Keyboard.CursorKeys;
 
   speed = 220;
+
+  moveVector = {
+    x: 0,
+    y: 0,
+  };
 
   constructor(
     scene: Phaser.Scene,
     x: number,
     y: number
   ) {
-    // 흰색 텍스처 생성
     if (!scene.textures.exists("player")) {
       const graphics = scene.add.graphics();
 
@@ -36,35 +44,66 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.setCollideWorldBounds(true);
 
+    const keyboard =
+      scene.input.keyboard;
+
+    if (!keyboard) {
+      throw new Error(
+        "Keyboard not available"
+      );
+    }
+
     this.cursors =
-      scene.input.keyboard!.createCursorKeys();
+      keyboard.createCursorKeys();
+  }
+
+  setMoveVector(
+    x: number,
+    y: number
+  ) {
+    this.moveVector.x = x;
+
+    this.moveVector.y = y;
   }
 
   update() {
     let vx = 0;
     let vy = 0;
 
+    // PC 키보드
     if (this.cursors.left.isDown) {
-      vx = -this.speed;
+      vx = -1;
     }
 
     if (this.cursors.right.isDown) {
-      vx = this.speed;
+      vx = 1;
     }
 
     if (this.cursors.up.isDown) {
-      vy = -this.speed;
+      vy = -1;
     }
 
     if (this.cursors.down.isDown) {
-      vy = this.speed;
+      vy = 1;
     }
 
-    this.setVelocity(vx, vy);
+    // 모바일 드래그 이동
+    if (
+      vx === 0 &&
+      vy === 0
+    ) {
+      vx = this.moveVector.x;
 
-    // 대각선 속도 보정
-    const body = this.body as Phaser.Physics.Arcade.Body;
+      vy = this.moveVector.y;
+    }
 
-    body.velocity.normalize().scale(this.speed);
+    this.setVelocity(
+      vx * this.speed,
+      vy * this.speed
+    );
+
+    this.body.velocity.normalize().scale(
+      this.speed
+    );
   }
 }
