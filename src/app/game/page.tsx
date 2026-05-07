@@ -122,9 +122,9 @@ export default function LunchGame(){
     // 화살표
     ctx.beginPath();
 
-    ctx.moveTo(center, 8);
-    ctx.lineTo(center - 16, 38);
-    ctx.lineTo(center + 16, 38);
+    ctx.moveTo(center, 38);
+    ctx.lineTo(center - 16, 8);
+    ctx.lineTo(center + 16, 8);
 
     ctx.closePath();
 
@@ -167,9 +167,13 @@ export default function LunchGame(){
 
     const anglePerSlice = (Math.PI * 2) / menus.length;
 
+    const extraSpins = Math.PI * 2 * 5;
+
     const targetAngle =
-      Math.PI * 2 * 5 +
+      rotation +
+      extraSpins +
       (Math.PI * 2 - randomIndex * anglePerSlice) -
+      (rotation % (Math.PI * 2)) -
       anglePerSlice / 2;
 
     const start = rotation;
@@ -190,7 +194,7 @@ export default function LunchGame(){
         start + (targetAngle - start) * easeOut;
 
       setRotation(currentRotation);
-
+      
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
@@ -237,6 +241,7 @@ export default function LunchGame(){
 
           <button
             onClick={addMenu}
+            disabled={isSpinning}
             className="
               px-5
               rounded-2xl
@@ -317,6 +322,7 @@ export default function LunchGame(){
                     font-semibold
                     active:scale-95
                   "
+                  disabled={isSpinning}
                 >
                   삭제
                 </button>
